@@ -14,7 +14,7 @@ Optical Flow extracted to PATH/flow_2k_fn2 (frame, width, height, XY vectors) in
 NPZ labels in PATH/labels_2k (width, height, classes) true/false hard maps - Check & run ruralscapes_preprocess.py.
 """
 
-PATH = '/home/nonari/windows/ruralscapes'
+PATH = '~/ruralscapes'
 
 train_videos = ['0043', '0044', '0045', '0046', '0047', '0050', '0053', '0085', '0093', '0097', '0101', '0114', '0118']     # train set videos
 train_videos = ['0050', '0043']       # demo video
