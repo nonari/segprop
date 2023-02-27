@@ -47,7 +47,8 @@ def main(vid=None, start_from=None, stop_at=None):
                           os.path.join(PATH, 'flow_farneback', 'DJI_' + video + '_backward.h5')),
                          os.path.join(PATH, 'labels', 'sparse_labels', 'DJI_' + video),
                          os.path.join(PATH, 'output_2k', 'i01', 'DJI_' + video),
-                         precalc_flow=False, start_from=start_from, stop_at=stop_at, device=device, overwrite=False, frame_filter=every_ten)
+                         precalc_flow=False, start_from=start_from, stop_at=stop_at,
+                         device=device, overwrite=False, frame_filter=every_ten)
 
     # run a few segprop iterations
     for it in range(2, iterations + 1):
@@ -56,7 +57,8 @@ def main(vid=None, start_from=None, stop_at=None):
                              os.path.join(PATH, 'flow_farneback', 'DJI_' + video + '_backward.h5')),
                             os.path.join(PATH, 'output_2k', 'i{:02d}'.format(it - 1), 'DJI_' + video),
                             os.path.join(PATH, 'output_2k', 'i{:02d}'.format(it), 'DJI_' + video),
-                            pv_series=[0, 5, 10], frame_copy=frame_copy, device=device, overwrite=False, frame_filter=every_ten)
+                            pv_series=[0, 5, 10], start_from=start_from, stop_at=stop_at, frame_copy=frame_copy,
+                            device=device, overwrite=False, frame_filter=every_ten)
 
     # apply the final filtering step over the evaluation frames
     for video in videos:
@@ -64,7 +66,8 @@ def main(vid=None, start_from=None, stop_at=None):
                          os.path.join(PATH, 'flow_farneback', 'DJI_' + video + '_backward.h5')),
                         os.path.join(PATH, 'output_2k', 'i{:02d}'.format(iterations - 1), 'DJI_' + video),
                         os.path.join(PATH, 'output_2k', 'i{:02d}'.format(iterations), 'DJI_' + video + '_filtered-test_frames'),
-                        pv_series=[0, 1, 3, 5, 7], method='self', frame_filter=frame_filter, device=device, overwrite=False)
+                        pv_series=[0, 1, 3, 5, 7], start_from=start_from, stop_at=stop_at, method='self',
+                        frame_filter=frame_filter, device=device, overwrite=False)
 
     # evaluate
     fmeasure, miou = stats.evaluate(os.path.join(PATH, 'output_2k', 'i{:02d}'.format(iterations)), os.path.join(PATH, 'labels_2k', 'train_odd'))
