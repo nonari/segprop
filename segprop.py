@@ -43,6 +43,7 @@ def vote(flow_h5_path, gt_path, output_path, key_weight=1, key_homography_weight
 
     # meta
     gt_maps = sorted(os.listdir(gt_path))
+    gt_maps = list(filter(lambda x: int(x[-10:-4]) <= stop_at, gt_maps))
     gt_no = [_frame_no(name) for name in gt_maps]
     gt_blocks = [(gt_no[i], gt_no[i + 1]) for i in range(len(gt_no) - 1)]
     noy, nox, noc = toio.load_array(os.path.join(gt_path, gt_maps[0]), device='cpu').shape
@@ -135,10 +136,10 @@ def vote(flow_h5_path, gt_path, output_path, key_weight=1, key_homography_weight
             np.savez_compressed(path, map=voted.cpu().numpy().astype(bool), votes=vote_map.cpu().numpy())
 
     # copy gt over
-    for i, gt in enumerate(gt_maps):
-        if frame_filter is not None and frame_filter(gt_no[i]):
-            continue
-        copyfile(os.path.join(gt_path, gt), os.path.join(output_path, gt))
+    # for i, gt in enumerate(gt_maps):
+    #     if frame_filter is not None and frame_filter(gt_no[i]):
+    #         continue
+    #     copyfile(os.path.join(gt_path, gt), os.path.join(output_path, gt))
 
     # verbose
     # print('done!')
@@ -221,7 +222,6 @@ def iterate(flow_h5_path, pv_path, output_path, pv_series=None, key_weight=1, ke
         flow_data_bkw = h5py.File(flow_h5_path[1], 'r')
         flow_data_bkw = flow_data_bkw['flow'][i - depth:i + depth]
         flow_data_bkw = torch.from_numpy(flow_data_bkw).to(device).flip(0).flip(3)
-
         # load map
         cur_map = toio.load(os.path.join(pv_path, pv_maps[i - pv_no[0]]), device=device)['votes'].type(torch.float)
         for j, k in enumerate(pv_series):
